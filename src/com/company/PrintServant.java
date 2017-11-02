@@ -10,58 +10,83 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
     }
 
     @Override
-    public String echo(String input) throws RemoteException {
-        return "From server: " + input;
-    }
-
-    @Override
-    public String print(String filename, String printer) throws RemoteException {
+    public String print(String username, String password, String filename, String printer) throws RemoteException {
+        if (check(username, password)){
+            return null;
+        }
         return null;
     }
 
     @Override
-    public String queue() throws RemoteException {
+    public String queue(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return null;
+        }
         return null;
     }
 
     @Override
-    public void topQueue(int job) throws RemoteException {
-
+    public void topQueue(String username, String password, int job) throws RemoteException {
+        if (check(username, password)){
+            return;
+        }
     }
 
     @Override
-    public void start() throws RemoteException {
-
+    public void start(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return;
+        }
     }
 
     @Override
-    public void stop() throws RemoteException {
-
+    public void stop(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return;
+        }
     }
 
     @Override
-    public void restart() throws RemoteException {
-
+    public void restart(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return ;
+        }
     }
 
     @Override
-    public String status() throws RemoteException {
+    public String status(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return null;
+        }
         return null;
     }
 
     @Override
-    public String readConfig(String parameter) throws RemoteException {
+    public String readConfig(String username, String password, String parameter) throws RemoteException {
+        if (check(username, password)){
+            return null;
+        }
         return null;
     }
 
     @Override
-    public void setConfig(String parameter, String value) throws RemoteException {
-
+    public void setConfig(String username, String password, String parameter, String value) throws RemoteException {
+        if (check(username, password)){
+            return;
+        }
     }
 
     @Override
-    public boolean check(String username, String password) {
+    public boolean check(String username, String password) throws RemoteException {
         return false;
+    }
+
+    @Override
+    public String addUser(String username, String password) throws RemoteException {
+        if (check(username,password)){
+            return null;
+        }
+        return null;
     }
 
 }
