@@ -25,5 +25,5 @@ public interface PrintService extends Remote{
 
     boolean check(String username, String password) throws RemoteException;
 
-    String addUser(String username, String password) throws  RemoteException;
+    void setAccount(String username, String password) throws RemoteException;
 }
