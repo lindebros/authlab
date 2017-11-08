@@ -9,6 +9,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrintServant extends UnicastRemoteObject implements PrintService {
 
@@ -18,6 +20,10 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
     private int paper_a4;
     private int paper_a3;
     boolean isRunning;
+
+    private int nxtSalt = 1;
+
+    List<String> queue = new ArrayList<>();
 
     protected PrintServant() throws RemoteException {
         super();
@@ -30,17 +36,21 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
     }
 
     @Override
-    public String print(String username, String password, String filename, String printer) throws RemoteException {
+    public void print(String username, String password, String filename, String printer) throws RemoteException {
         if (check(username, password) && isRunning){
-            return null;
+            queue.add(filename + " : " + printer);
         }
-        return null;
     }
 
     @Override
     public String queue(String username, String password) throws RemoteException {
         if (check(username, password) && isRunning){
-            return null;
+            String s = "";
+            int i =0;
+            while (i < queue.size()){
+                s += (++i) + " : " + queue.get(i-1);
+            }
+            return s;
         }
         return null;
     }
@@ -132,10 +142,11 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
     public boolean check(String username, String password) throws RemoteException {
         try {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
-            sha.update(password.getBytes());
             if (Files.lines(Paths.get("passwords.txt")).anyMatch(
                     str -> {
                         try {
+                            String[] strlst = str.split(" ");
+                            sha.update((password + strlst[0]).getBytes());
                             return (str.contains(username) && str.contains(new String(sha.digest(), "UTF-8")));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -159,21 +170,32 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
         if (!check(username,password)){
 
             try {
+                if (Files.lines(Paths.get("passwords.txt")).anyMatch(
+                        str-> (str.contains(username))
+                )){
+                    return;
+                }
 
-                String str = username;
-                MessageDigest sha = MessageDigest.getInstance("SHA-256");
-                sha.update(password.getBytes());
-                str += " " + new String(sha.digest(), "UTF-8");
-                str = System.lineSeparator() + str;
+                try {
 
-                Writer output;
-                output = new BufferedWriter(new FileWriter("passwords.txt",true));
-                output.append(str);
-                output.close();
+                    String str = nxtSalt + " " + username;
+                    MessageDigest sha = MessageDigest.getInstance("SHA-256");
+                    sha.update((password + nxtSalt).getBytes());
+                    str += " " + new String(sha.digest(), "UTF-8");
+                    str = System.lineSeparator() + str;
+
+                    Writer output;
+                    output = new BufferedWriter(new FileWriter("passwords.txt",true));
+                    output.append(str);
+                    output.close();
+                    nxtSalt++;
 
 
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -181,6 +203,7 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
 
         }
     }
+
 
 
 }

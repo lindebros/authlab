@@ -12,9 +12,9 @@ public class Client {
 
         service.setAccount("acc1", "abcdefg");
         service.setAccount("acc2","1234567");
-        service.setAccount("acc2","1234567");
+        service.setAccount("acc3","1234567");
 
 
-        System.out.println("--- "+ service.print("username", "password","Hey Server", "printer1"));
+        service.print("username", "password","Hey Server", "printer1");
     }
 }
