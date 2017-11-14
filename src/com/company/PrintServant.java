@@ -95,28 +95,25 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
     public boolean check(String username, String password) throws RemoteException {
         try {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
-            if (Files.lines(Paths.get("passwords.txt")).anyMatch(
-                    str -> {
-                        try {
-                            if (!str.equals("")) {
-                                String[] strlst = str.split(" ");
-                                sha.update((password + strlst[0]).getBytes());
-                                String s = new String(sha.digest(),"UTF-16");
+            return (Files.lines(Paths.get("passwords.txt")).anyMatch(
+                str -> {
+                    if (!str.equals("")) {
+                        String[] strlst = str.split(" ");
+                        sha.update((password + strlst[0]).getBytes());
+                        String s = null;
 
-                                return (strlst[1].equals(username) && strlst[2].equals(s));
-                            }return false;
+                        try {
+                            s = new String(sha.digest(),"UTF-16");
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
-                            return false;
                         }
 
+                        return (strlst[1].equals(username) && strlst[2].equals(s));
                     }
-            )){
-                return  true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+                    return false;
+                }
+            ));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;

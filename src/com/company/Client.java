@@ -19,6 +19,10 @@ public class Client {
         service.setAccount("acc2","asdasd");
         System.out.println(service.print("acc2", "asdasd","Hey Server", "printer2"));
 
+        run(service);
+
+    }
+    private static void run(PrintService service) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         boolean run = true;
 
@@ -103,6 +107,5 @@ public class Client {
                     break;
             }
         }
-
     }
 }
