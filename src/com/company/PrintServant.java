@@ -14,73 +14,58 @@ import java.util.List;
 
 public class PrintServant extends UnicastRemoteObject implements PrintService {
 
-    private int ink_cyan;
-    private int ink_magenta;
-    private int ink_yellow;
-    private int paper_a4;
-    private int paper_a3;
-    boolean isRunning;
-
     private int nxtSalt = 1;
-
-    List<String> queue = new ArrayList<>();
 
     protected PrintServant() throws RemoteException {
         super();
-        ink_cyan = 100;
-        ink_magenta = 100;
-        ink_yellow = 100;
-        paper_a3 = 100;
-        paper_a4 = 100;
-        isRunning = false;
     }
 
     @Override
-    public void print(String username, String password, String filename, String printer) throws RemoteException {
-        if (check(username, password) && isRunning){
-            queue.add(filename + " : " + printer);
+    public String print(String username, String password, String filename, String printer) throws RemoteException {
+        if (check(username, password)){
+            return "Printing " + filename + " from the printer " + printer +".";
         }
+        return "Could not print document.";
     }
 
     @Override
     public String queue(String username, String password) throws RemoteException {
-        if (check(username, password) && isRunning){
-            String s = "";
-            int i =0;
-            while (i < queue.size()){
-                s += (++i) + " : " + queue.get(i-1);
-            }
-            return s;
-        }
-        return null;
-    }
-
-    @Override
-    public void topQueue(String username, String password, int job) throws RemoteException {
-        if (check(username, password) && isRunning){
-            return;
-        }
-    }
-
-    @Override
-    public void start(String username, String password) throws RemoteException {
         if (check(username, password)){
-            isRunning = true;
+            return "Printing queue.";
         }
+        return "Could not print queue";
     }
 
     @Override
-    public void stop(String username, String password) throws RemoteException {
+    public String topQueue(String username, String password, int job) throws RemoteException {
         if (check(username, password)){
-            isRunning = false;
+            return "Moving job " + job + " to top of queue.";
         }
+        return "Could not change queue.";
     }
 
     @Override
-    public void restart(String username, String password) throws RemoteException {
-        if (check(username, password)){
-            return ;
+    public String start(String username, String password) throws RemoteException {
+        if (check(username,password)){
+            return "Starting printing service.";
         }
+        return "Could not start printing service.";
+    }
+
+    @Override
+    public String stop(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return "Stopping printing service.";
+        }
+        return "Could not stop printing service.";
+    }
+
+    @Override
+    public String restart(String username, String password) throws RemoteException {
+        if (check(username, password)){
+            return "Restarting print server.";
+        }
+        return "Could not restart print server.";
     }
 
     @Override
@@ -88,55 +73,23 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
         if (check(username, password)){
             return "This printer is doing well.";
         }
-        return null;
+        return "Cannot tell status of print service.";
     }
 
     @Override
     public String readConfig(String username, String password, String parameter) throws RemoteException {
-        if (check(username, password) && isRunning){
-            switch (parameter){
-                case "ink_cyan":
-                    return "Printer has " + ink_cyan + "% cyan ink.";
-                case "ink_magenta":
-                    return "Printer has " + ink_magenta + "% magenta ink.";
-                case "ink_yellow":
-                    return "Printer has " + ink_yellow + "% yellow ink.";
-                case "paper_A4":
-                    return "Printer has " + paper_a4 + "% A4 paper.";
-                case "paper_A3":
-                    return "Printer has " + paper_a3 + "% A3 paper.";
-                default:
-                    return "Parameter not found";
-            }
-
+        if (check(username, password)){
+            return "Returning configurations of print server.";
         }
-        return null;
+        return "Could not return configurations.";
     }
 
     @Override
-    public void setConfig(String username, String password, String parameter, String value) throws RemoteException {
-        if (check(username, password) && isRunning){
-            switch (parameter){
-                case "ink_cyan":
-                    ink_cyan = Integer.parseInt(value);
-                    break;
-                case "ink_magenta":
-                    ink_magenta = Integer.parseInt(value);
-                    break;
-                case "ink_yellow":
-                    ink_yellow = Integer.parseInt(value);
-                    break;
-                case "paper_A4":
-                    paper_a4 = Integer.parseInt(value);
-                    break;
-                case "paper_A3":
-                    paper_a3 = Integer.parseInt(value);
-                    break;
-                default:
-                    break;
-            }
-
+    public String setConfig(String username, String password, String parameter, String value) throws RemoteException {
+        if (check(username, password)){
+            return "Changing parameter " + parameter +" to " + value;
         }
+        return "Could not change parameter " + parameter;
     }
 
     public boolean check(String username, String password) throws RemoteException {
@@ -145,9 +98,13 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
             if (Files.lines(Paths.get("passwords.txt")).anyMatch(
                     str -> {
                         try {
-                            String[] strlst = str.split(" ");
-                            sha.update((password + strlst[0]).getBytes());
-                            return (str.contains(username) && str.contains(new String(sha.digest(), "UTF-8")));
+                            if (!str.equals("")) {
+                                String[] strlst = str.split(" ");
+                                sha.update((password + strlst[0]).getBytes());
+                                String s = new String(sha.digest(),"UTF-16");
+
+                                return (strlst[1].equals(username) && strlst[2].equals(s));
+                            }return false;
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                             return false;
@@ -181,7 +138,7 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
                     String str = nxtSalt + " " + username;
                     MessageDigest sha = MessageDigest.getInstance("SHA-256");
                     sha.update((password + nxtSalt).getBytes());
-                    str += " " + new String(sha.digest(), "UTF-8");
+                    str += " " + new String(sha.digest(), "UTF-16");
                     str = System.lineSeparator() + str;
 
                     Writer output;
