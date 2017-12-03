@@ -11,85 +11,87 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
-public class PrintServant extends UnicastRemoteObject implements PrintService {
+public class PrintServantA extends UnicastRemoteObject implements PrintService {
 
     private int nxtSalt = 1;
 
-    protected PrintServant() throws RemoteException {
+
+    PrintServantA() throws RemoteException {
         super();
     }
 
     @Override
     public String print(String username, String password, String filename, String printer) throws RemoteException {
-        if (check(username, password)){
-            return "Printing " + filename + " from the printer " + printer +".";
+        if (check(username, password) && verifyAccessControl(username, "print")){
+            return "ALLOWED";
         }
-        return "Could not print document.";
+        return "DENIED";
     }
 
     @Override
     public String queue(String username, String password) throws RemoteException {
-        if (check(username, password)){
-            return "Printing queue.";
+        if (check(username, password) && verifyAccessControl(username, "queue")){
+            return "ALLOWED";
         }
-        return "Could not print queue";
+        return "DENIED";
     }
 
     @Override
     public String topQueue(String username, String password, int job) throws RemoteException {
-        if (check(username, password)){
-            return "Moving job " + job + " to top of queue.";
+        if (check(username, password) && verifyAccessControl(username, "topQueue")){
+            return "ALLOWED";
         }
-        return "Could not change queue.";
+        return "DENIED";
     }
 
     @Override
     public String start(String username, String password) throws RemoteException {
-        if (check(username,password)){
-            return "Starting printing service.";
+        if (check(username, password) && verifyAccessControl(username, "start")){
+            return "ALLOWED";
         }
-        return "Could not start printing service.";
+        return "DENIED";
     }
 
     @Override
     public String stop(String username, String password) throws RemoteException {
-        if (check(username, password)){
-            return "Stopping printing service.";
+        if (check(username, password) && verifyAccessControl(username, "stop")){
+            return "ALLOWED";
         }
-        return "Could not stop printing service.";
+        return "DENIED";
     }
 
     @Override
     public String restart(String username, String password) throws RemoteException {
-        if (check(username, password)){
-            return "Restarting print server.";
+        if (check(username, password) && verifyAccessControl(username, "restart")){
+            return "ALLOWED";
         }
-        return "Could not restart print server.";
+        return "DENIED";
     }
 
     @Override
     public String status(String username, String password) throws RemoteException {
-        if (check(username, password)){
-            return "This printer is doing well.";
+        if (check(username, password) && verifyAccessControl(username, "status")){
+            return "ALLOWED";
         }
-        return "Cannot tell status of print service.";
+        return "DENIED";
     }
 
     @Override
     public String readConfig(String username, String password, String parameter) throws RemoteException {
-        if (check(username, password)){
-            return "Returning configurations of print server.";
+        if (check(username, password) && verifyAccessControl(username, "readConfig")){
+            return "ALLOWED";
         }
-        return "Could not return configurations.";
+        return "DENIED";
     }
 
     @Override
     public String setConfig(String username, String password, String parameter, String value) throws RemoteException {
-        if (check(username, password)){
-            return "Changing parameter " + parameter +" to " + value;
+        if (check(username, password) && verifyAccessControl(username, "setConfig")){
+            return "ALLOWED";
         }
-        return "Could not change parameter " + parameter;
+        return "DENIED";
     }
 
     public boolean check(String username, String password) throws RemoteException {
@@ -121,7 +123,7 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
 
     @Override
     public void setAccount(String username, String password) throws RemoteException {
-        if (!check(username,password)){
+        if (!check(username, password)) {
 
             try {
                 if (Files.lines(Paths.get("passwords.txt")).anyMatch(
@@ -136,7 +138,7 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
                     MessageDigest sha = MessageDigest.getInstance("SHA-256");
                     sha.update((password + nxtSalt).getBytes());
                     str += " " + new String(sha.digest(), "UTF-16");
-                    str = System.lineSeparator() + str;
+                    str = str +System.lineSeparator();
 
                     Writer output;
                     output = new BufferedWriter(new FileWriter("passwords.txt",true));
@@ -147,17 +149,36 @@ public class PrintServant extends UnicastRemoteObject implements PrintService {
 
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                }       
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
     }
 
+    @Override
+    public boolean verifyAccessControl(String username, String operation) throws RemoteException {
+        try {
+            return (Files.lines(Paths.get("access_control_list.txt")).anyMatch(
+               str -> {
+                   if (str.length() > 0){
+                       String[] strList = str.split(" ");
+                       if (strList[0].equals(username)){
+                           for (String s : strList){
+                               if (s.equals(operation)){
+                                   return true;
+                               }
+                           }
+                       }
+                   }
+                   return false;
+               }
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
 }
