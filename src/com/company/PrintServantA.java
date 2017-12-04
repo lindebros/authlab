@@ -149,7 +149,7 @@ public class PrintServantA extends UnicastRemoteObject implements PrintService {
 
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
-                }       
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

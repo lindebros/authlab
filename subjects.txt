@@ -1,0 +1,7 @@
+Alice manager
+Bob technician
+Cecilia powerUser
+David user
+Erica user
+Fred user
+George user

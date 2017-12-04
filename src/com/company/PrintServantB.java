@@ -1,5 +1,6 @@
 package com.company;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -121,6 +122,40 @@ public class PrintServantB extends UnicastRemoteObject implements PrintService {
 
     @Override
     public boolean verifyAccessControl(String username, String operation) throws RemoteException {
+        try{
+            return Files.lines(Paths.get("subjects.txt")).anyMatch(
+              str -> {
+                  if (str.length() > 0){
+                      String[] strList = str.split(" ");
+                      if (strList[0].equals(username)){
+                          try {
+                              return Files.lines(Paths.get("roles.txt")).anyMatch(
+                                      str2->{
+                                          if (str2.length() > 0){
+                                              String[] strList2 = str2.split(" ");
+                                              if (strList2[0].equals(strList[1])){
+                                                  for (String s: strList2){
+                                                      if (s.equals(operation)){
+                                                          return true;
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                          return false;
+                                      }
+                              );
+                          } catch (IOException e) {
+                              e.printStackTrace();
+                          }
+                      }
+                  }
+                  return  false;
+              }
+            );
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
         return false;
     }
 
