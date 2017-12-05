@@ -25,8 +25,10 @@ public class ClientA {
         service.setAccount("Erica","abc123");
         service.setAccount("Fred","abc123");
         service.setAccount("George","abc123");
+        service.setAccount("Henry","abc123");
+        service.setAccount("Ida","abc123");
 
-        String[] names = {"Alice", "Bob", "Cecilia", "David", "Erica", "Fred", "George"};
+        String[] names = {"Alice", "Bob", "Cecilia", "David", "Erica", "Fred", "George", "Henry", "Ida"};
         // Every user tries to print
         System.out.println("PRINT operation:");
         for (String s: names){

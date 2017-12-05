@@ -10,7 +10,7 @@ public class ApplicationServerA {
     public static void main(String[] args) throws RemoteException {
         Registry registry = LocateRegistry.createRegistry(5099);
         try {
-            registry.rebind("print", new PrintServantA());
+            registry.rebind("print", new PrintServantA("access_control_listB.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }

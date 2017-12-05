@@ -1,0 +1,98 @@
+PRINT operation:
+Alice calls operation PRINT: ALLOWED
+Bob calls operation PRINT: DENIED
+Cecilia calls operation PRINT: ALLOWED
+David calls operation PRINT: ALLOWED
+Erica calls operation PRINT: ALLOWED
+Fred calls operation PRINT: ALLOWED
+George calls operation PRINT: ALLOWED
+Henry calls operation PRINT: DENIED
+Ida calls operation PRINT: DENIED
+
+Queue operation:
+Alice calls operation QUEUE: ALLOWED
+Bob calls operation QUEUE: DENIED
+Cecilia calls operation QUEUE: ALLOWED
+David calls operation QUEUE: ALLOWED
+Erica calls operation QUEUE: ALLOWED
+Fred calls operation QUEUE: ALLOWED
+George calls operation QUEUE: ALLOWED
+Henry calls operation QUEUE: DENIED
+Ida calls operation QUEUE: DENIED
+
+TopQueue operation:
+Alice calls operation TOPQUEUE: ALLOWED
+Bob calls operation TOPQUEUE: DENIED
+Cecilia calls operation TOPQUEUE: ALLOWED
+David calls operation TOPQUEUE: DENIED
+Erica calls operation TOPQUEUE: DENIED
+Fred calls operation TOPQUEUE: DENIED
+George calls operation TOPQUEUE: DENIED
+Henry calls operation TOPQUEUE: DENIED
+Ida calls operation TOPQUEUE: DENIED
+
+Start operation:
+Alice calls operation START: ALLOWED
+Bob calls operation START: ALLOWED
+Cecilia calls operation START: DENIED
+David calls operation START: DENIED
+Erica calls operation START: DENIED
+Fred calls operation START: DENIED
+George calls operation START: DENIED
+Henry calls operation START: DENIED
+Ida calls operation START: DENIED
+
+Stop operation:
+Alice calls operation STOP: ALLOWED
+Bob calls operation STOP: ALLOWED
+Cecilia calls operation STOP: DENIED
+David calls operation STOP: DENIED
+Erica calls operation STOP: DENIED
+Fred calls operation STOP: DENIED
+George calls operation STOP: DENIED
+Henry calls operation STOP: DENIED
+Ida calls operation STOP: DENIED
+
+Restart operation:
+Alice calls operation RESTART: ALLOWED
+Bob calls operation RESTART: ALLOWED
+Cecilia calls operation RESTART: ALLOWED
+David calls operation RESTART: DENIED
+Erica calls operation RESTART: DENIED
+Fred calls operation RESTART: DENIED
+George calls operation RESTART: DENIED
+Henry calls operation RESTART: DENIED
+Ida calls operation RESTART: DENIED
+
+Status operation:
+Alice calls operation STATUS: ALLOWED
+Bob calls operation STATUS: ALLOWED
+Cecilia calls operation STATUS: DENIED
+David calls operation STATUS: DENIED
+Erica calls operation STATUS: DENIED
+Fred calls operation STATUS: DENIED
+George calls operation STATUS: DENIED
+Henry calls operation STATUS: DENIED
+Ida calls operation STATUS: DENIED
+
+ReadConfig operation:
+Alice calls operation READCONFIG: ALLOWED
+Bob calls operation READCONFIG: ALLOWED
+Cecilia calls operation READCONFIG: DENIED
+David calls operation READCONFIG: DENIED
+Erica calls operation READCONFIG: DENIED
+Fred calls operation READCONFIG: DENIED
+George calls operation READCONFIG: DENIED
+Henry calls operation READCONFIG: DENIED
+Ida calls operation READCONFIG: DENIED
+
+SetConfig operation:
+Alice calls operation SETCONFIG: ALLOWED
+Bob calls operation SETCONFIG: ALLOWED
+Cecilia calls operation SETCONFIG: DENIED
+David calls operation SETCONFIG: DENIED
+Erica calls operation SETCONFIG: DENIED
+Fred calls operation SETCONFIG: DENIED
+George calls operation SETCONFIG: DENIED
+Henry calls operation SETCONFIG: DENIED
+Ida calls operation SETCONFIG: DENIED

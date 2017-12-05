@@ -17,9 +17,10 @@ public class PrintServantA extends UnicastRemoteObject implements PrintService {
 
     private int nxtSalt = 1;
 
-
-    PrintServantA() throws RemoteException {
+    private String acl;
+    PrintServantA(String acl) throws RemoteException {
         super();
+        this.acl = acl;
     }
 
     @Override
@@ -159,7 +160,7 @@ public class PrintServantA extends UnicastRemoteObject implements PrintService {
     @Override
     public boolean verifyAccessControl(String username, String operation) throws RemoteException {
         try {
-            return (Files.lines(Paths.get("access_control_list.txt")).anyMatch(
+            return (Files.lines(Paths.get(acl)).anyMatch(
                str -> {
                    if (str.length() > 0){
                        String[] strList = str.split(" ");

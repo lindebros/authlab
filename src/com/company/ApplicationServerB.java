@@ -8,6 +8,6 @@ public class ApplicationServerB {
 
     public static void main(String[] args) throws RemoteException {
         Registry registry = LocateRegistry.createRegistry(5299);
-        registry.rebind("print", new PrintServantB());
+        registry.rebind("print", new PrintServantB("roles.txt","subjectsB.txt"));
     }
 }

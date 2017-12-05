@@ -1,0 +1,8 @@
+Alice manager
+Cecilia powerUser
+David user
+Erica user
+Fred user
+George user technician
+Henry user
+Ida powerUser
